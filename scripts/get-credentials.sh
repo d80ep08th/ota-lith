@@ -5,9 +5,9 @@ set -euox pipefail
 SERVER_DIR=ota-ce-gen
 
 namespace="x-ats-namespace:default"
-keyserver="keyserver.ota.ce"
-reposerver="reposerver.ota.ce"
-director="director.ota.ce"
+keyserver="keyserver.uptanedemo.org"
+reposerver="reposerver.uptanedemo.org"
+director="director.uptanedemo.org"
 
 curl --silent --fail ${director}/health || echo "$director not running"
 curl --silent --fail ${keyserver}/health || echo "$keyserver not running"
@@ -29,14 +29,14 @@ keys=$(curl -s -f "${keyserver}/api/v1/root/${id}/keys/targets/pairs")
 echo ${keys} | jq '.[0] | {keytype, keyval: {public: .keyval.public}}'   > "${SERVER_DIR}/targets.pub"
 echo ${keys} | jq '.[0] | {keytype, keyval: {private: .keyval.private}}' > "${SERVER_DIR}/targets.sec"
 
-echo "http://reposerver.ota.ce" > "${SERVER_DIR}/tufrepo.url"
-echo "http://ota.ce:30443" > "${SERVER_DIR}/autoprov.url"
+echo "http://reposerver.uptanedemo.org" > "${SERVER_DIR}/tufrepo.url"
+echo "http://uptanedemo.org:30443" > "${SERVER_DIR}/autoprov.url"
 
 cat > "${SERVER_DIR}/treehub.json" <<END
 {
     "no_auth": true,
     "ostree": {
-        "server": "http://treehub.ota.ce/api/v3/"
+        "server": "http://treehub.uptanedemo.org/api/v3/"
     }
 }
 END

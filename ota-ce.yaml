@@ -1,6 +1,6 @@
 # version: '3.8'
 
-# TODO: Some proxy for reposerver.ota.ce and such so don't have to use proxies
+# TODO: Some proxy for reposerver.uptanedemo.org and such so don't have to use proxies
 
 # TODO: Kafka
 
@@ -22,7 +22,7 @@ services:
   gateway:
     image: nginx:1.13.7
     restart: always
-    command: ["nginx-debug", "-g", "daemon off;"]      
+    command: ["nginx-debug", "-g", "daemon off;"]
     expose:
       - '80'
       - '443'
@@ -70,27 +70,27 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.reposerver.service=reposerver
-      - traefik.http.routers.reposerver.rule=Host(`reposerver.ota.ce`)
+      - traefik.http.routers.reposerver.rule=Host(`reposerver.uptanedemo.org`)
       - traefik.http.services.reposerver.loadbalancer.server.port=7100
       - traefik.http.routers.keyserver.service=keyserver
-      - traefik.http.routers.keyserver.rule=Host(`keyserver.ota.ce`)
+      - traefik.http.routers.keyserver.rule=Host(`keyserver.uptanedemo.org`)
       - traefik.http.services.keyserver.loadbalancer.server.port=7200
       - traefik.http.routers.director.service=director
-      - traefik.http.routers.director.rule=Host(`director.ota.ce`)
+      - traefik.http.routers.director.rule=Host(`director.uptanedemo.org`)
       - traefik.http.services.director.loadbalancer.server.port=7300
       - traefik.http.routers.treehub.service=treehub
-      - traefik.http.routers.treehub.rule=Host(`treehub.ota.ce`)
+      - traefik.http.routers.treehub.rule=Host(`treehub.uptanedemo.org`)
       - traefik.http.services.treehub.loadbalancer.server.port=7400
       - traefik.http.routers.deviceregistry.service=deviceregistry
-      - traefik.http.routers.deviceregistry.rule=Host(`deviceregistry.ota.ce`)
+      - traefik.http.routers.deviceregistry.rule=Host(`deviceregistry.uptanedemo.org`)
       - traefik.http.services.deviceregistry.loadbalancer.server.port=7500
       - traefik.http.routers.campaigner.service=campaigner
-      - traefik.http.routers.campaigner.rule=Host(`campaigner.ota.ce`)
+      - traefik.http.routers.campaigner.rule=Host(`campaigner.uptanedemo.org`)
       - traefik.http.services.campaigner.loadbalancer.server.port=7600
     volumes:
       - ./ota-lith-ce.conf:/tmp/ota-lith.conf
       - objects:/var/lib/ota-lith
-     
+
   ota-lith-daemons:
     image: uptane/ota-lith:latest
     restart: always
