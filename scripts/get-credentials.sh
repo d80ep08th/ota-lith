@@ -5,13 +5,13 @@ set -euox pipefail
 SERVER_DIR=ota-ce-gen
 
 namespace="x-ats-namespace:default"
-keyserver="keyserver.uptanedemo.org"
-reposerver="reposerver.uptanedemo.org"
-director="director.uptanedemo.org"
+keyserver="https://keyserver.uptanedemo.org"
+reposerver="https://reposerver.uptanedemo.org"
+director="https://director.uptanedemo.org"
 
-curl --silent --fail ${director}/health || echo "$director not running"
-curl --silent --fail ${keyserver}/health || echo "$keyserver not running"
-curl --silent --fail ${reposerver}/health || echo "$reposerver not running"
+curl --silent --fail ${director}/health/version || echo "$director not running"
+curl --silent --fail ${keyserver}/health/version || echo "$keyserver not running"
+curl --silent --fail ${reposerver}/health/version || echo "$reposerver not running"
 
 curl -X POST "${reposerver}/api/v1/user_repo" -H "${namespace}"
 
