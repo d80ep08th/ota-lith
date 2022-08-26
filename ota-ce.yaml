@@ -7,17 +7,30 @@
 services:
   reverse-proxy:
     # The official v2 Traefik docker image
-    image: traefik:v2.3
+    image: traefik:v2.8
     # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker --providers.docker.exposedbydefault=false
+    command: 
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      #- "--certificatesresolvers.myresolver.acme.email=postmaster@example.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       # The HTTP port
       - "80:80"
+      - "443:443"
       # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
     volumes:
+      - "./letsencrypt:/letsencrypt"
       # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   gateway:
     image: nginx:1.13.7
@@ -28,12 +41,17 @@ services:
       - '443'
       - '8443'
     ports:
-#      - '80'
+      - '80'
       - '8443'
       - '30443:8443'
     depends_on:
       - ota-lith
       - reverse-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway.rule=Host(`uptanedemo.org`)"
+      - "traefik.http.routers.gateway.entrypoints=websecure"
+      - "traefik.http.routers.gateway.tls.certresolver=myresolver"
     volumes:
       - ./ota-ce/gateway.conf:/etc/nginx/conf.d/gateway.conf:ro
       - ./ota-ce-gen/server.chain.pem:/etc/ssl/gateway/server.chain.pem:ro
@@ -71,21 +89,33 @@ services:
       - traefik.enable=true
       - traefik.http.routers.reposerver.service=reposerver
       - traefik.http.routers.reposerver.rule=Host(`reposerver.uptanedemo.org`)
+      - traefik.http.routers.reposerver.entrypoints=websecure
+      - traefik.http.routers.reposerver.tls.certresolver=myresolver
       - traefik.http.services.reposerver.loadbalancer.server.port=7100
       - traefik.http.routers.keyserver.service=keyserver
       - traefik.http.routers.keyserver.rule=Host(`keyserver.uptanedemo.org`)
+      - traefik.http.routers.keyserver.entrypoints=websecure
+      - traefik.http.routers.keyserver.tls.certresolver=myresolver
       - traefik.http.services.keyserver.loadbalancer.server.port=7200
       - traefik.http.routers.director.service=director
       - traefik.http.routers.director.rule=Host(`director.uptanedemo.org`)
+      - traefik.http.routers.director.entrypoints=websecure
+      - traefik.http.routers.director.tls.certresolver=myresolver
       - traefik.http.services.director.loadbalancer.server.port=7300
       - traefik.http.routers.treehub.service=treehub
       - traefik.http.routers.treehub.rule=Host(`treehub.uptanedemo.org`)
+      - traefik.http.routers.treehub.entrypoints=websecure
+      - traefik.http.routers.treehub.tls.certresolver=myresolver
       - traefik.http.services.treehub.loadbalancer.server.port=7400
       - traefik.http.routers.deviceregistry.service=deviceregistry
       - traefik.http.routers.deviceregistry.rule=Host(`deviceregistry.uptanedemo.org`)
+      - traefik.http.routers.deviceregistry.entrypoints=websecure
+      - traefik.http.routers.deviceregistry.tls.certresolver=myresolver
       - traefik.http.services.deviceregistry.loadbalancer.server.port=7500
       - traefik.http.routers.campaigner.service=campaigner
       - traefik.http.routers.campaigner.rule=Host(`campaigner.uptanedemo.org`)
+      - traefik.http.routers.campaigner.entrypoints=websecure
+      - traefik.http.routers.campaigner.tls.certresolver=myresolver
       - traefik.http.services.campaigner.loadbalancer.server.port=7600
     volumes:
       - ./ota-lith-ce.conf:/tmp/ota-lith.conf
