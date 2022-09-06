@@ -57,6 +57,11 @@ services:
       - ./ota-ce-gen/server.chain.pem:/etc/ssl/gateway/server.chain.pem:ro
       - ./ota-ce-gen/server.key:/etc/ssl/gateway/server.key:ro
       - ./ota-ce-gen/devices/ca.crt:/etc/ssl/gateway/ca.crt:ro
+      - ./ota-ce-gen/devices/ca.crt:/usr/share/nginx/html/ca.crt
+      - ./ota-ce-gen/devices/ca.key:/usr/share/nginx/html/ca.key
+      - ./ota-ce-gen/server_ca.pem:/usr/share/nginx/html/server_ca.pem
+      - ./scripts/certs/client.ext:/usr/share/nginx/html/client.ext
+      - ./scripts/certs/client.cnf:/usr/share/nginx/html/client.cnf
 
   db:
     image: mariadb:10.4
