@@ -49,7 +49,7 @@ services:
       - reverse-proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gateway.rule=Host(`uptanedemo.org`)"
+      - "traefik.http.routers.gateway.rule=Host(`dgw.uptanedemo.org`)"
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls.certresolver=myresolver"
     volumes:

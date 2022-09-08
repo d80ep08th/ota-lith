@@ -5,7 +5,7 @@ set -euo pipefail
 SERVER_DIR=ota-ce-gen
 DEVICES_DIR=ota-ce-gen/devices
 CWD=$(dirname $0)
-SERVER_NAME=uptanedemo.org
+SERVER_NAME=dgw.uptanedemo.org
 
 if [ -d "$SERVER_DIR" ] || [ -d "$DEVICES_DIR" ] ; then
     echo "${SERVER_DIR} or ${DEVICES_DIR} exists, aborting"
